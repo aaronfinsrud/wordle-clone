@@ -1,8 +1,7 @@
+import React from "react"
 
-function Box({rows, cols}) {
-  return (
-    <div className='letter-box'></div>
-  );
+function Box() {
+  return <div className="letter-box" />
 }
 
-export default Box;
+export default Box
