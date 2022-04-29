@@ -1,11 +1,23 @@
-import Box from './Box.js';
+import React from "react"
+import PropTypes from "prop-types"
+import Box from "./Box"
 
-function Row({rows, cols}) {
+function Row({ row, cols }) {
   return (
-      <div className='letter-row'>
-        {Array(cols).fill(0).map(el => <Box cols={cols}/>)}
-      </div>
-  );
+    <div className="letter-row">
+      {Array(cols)
+        .fill(0)
+        .map((el, idx) => `row-${row}-col-${idx}`)
+        .map((id) => (
+          <Box key={id} cols={cols} />
+        ))}
+    </div>
+  )
 }
 
-export default Row;
+Row.propTypes = {
+  cols: PropTypes.number.isRequired,
+  row: PropTypes.number.isRequired,
+}
+
+export default Row
