@@ -1,50 +1,55 @@
-import React, { useState, useEffect } from "react"
-import { WORDS } from "../assets/words"
+import React, { useContext } from "react"
 import Row from "./Row"
+import { BoardContext } from "../contexts/BoardContext"
+import WORDS from "../assets/words"
 
 function Board() {
-  const NUMBER_OF_GUESSES = 6
-  const [guessesRemaining, setGuessesRemaining] = useState(NUMBER_OF_GUESSES)
-  const [currentGuess, setCurrentGuess] = useState([])
-  const [nextLetter, setNextLetter] = useState(0)
-  const [rightGuessString, setRightGuessString] = useState("")
-
-  useEffect(() => {
-    setRightGuessString(WORDS[Math.floor(Math.random() * WORDS.length)])
-  }, [])
-
-  function deleteLetter() {
-    const row =
-      document.getElementsByClassName("letter-row")[
-        NUMBER_OF_GUESSES - guessesRemaining
-      ]
-    const box = row.children[nextLetter - 1]
-    box.textContent = ""
-    box.classList.remove("filled-box")
-    currentGuess.pop()
-    setNextLetter(nextLetter - 1)
-  }
+  const { state, dispatch } = useContext(BoardContext)
+  const {
+    numberOfGuesses,
+    guessesRemaining,
+    rightGuessString,
+    nextLetter,
+    board,
+  } = state
 
   function insertLetter(pressedKey) {
+    // update view
     if (nextLetter === 5) return
     const lowerCaseKey = pressedKey.toLowerCase()
     const row =
       document.getElementsByClassName("letter-row")[
-        NUMBER_OF_GUESSES - guessesRemaining
+        numberOfGuesses - guessesRemaining
       ]
     const box = row.children[nextLetter]
     box.textContent = lowerCaseKey
     box.classList.add("filled-box")
-    setCurrentGuess([...currentGuess, lowerCaseKey])
-    setNextLetter(nextLetter + 1)
+
+    // update model
+    const action = { type: "INSERT_LETTER", character: lowerCaseKey }
+    dispatch(action)
+  }
+
+  function deleteLetter() {
+    // update view
+    const row =
+      document.getElementsByClassName("letter-row")[
+        numberOfGuesses - guessesRemaining
+      ]
+    const box = row.children[nextLetter - 1]
+    box.textContent = ""
+    box.classList.remove("filled-box")
+    // update model
+    const action = { type: "DELETE_LETTER" }
+    dispatch(action)
   }
 
   function checkGuess() {
     const row =
       document.getElementsByClassName("letter-row")[
-        NUMBER_OF_GUESSES - guessesRemaining
+        numberOfGuesses - guessesRemaining
       ]
-    const guessString = currentGuess.join("")
+    const guessString = board[numberOfGuesses - guessesRemaining].join("")
     const rightGuess = Array.from(rightGuessString)
     if (guessString.length !== 5) {
       alert("Not enough letters!")
@@ -54,12 +59,12 @@ function Board() {
       alert("Word not in list!")
       return
     }
-    for (let i = 0; i < currentGuess.length; i += 1) {
+    for (let i = 0; i < guessString.length; i += 1) {
       const box = row.children[i]
-      const letterPosition = rightGuess.indexOf(currentGuess[i])
+      const letterPosition = rightGuess.indexOf(guessString[i])
       let letterColor = ""
       if (letterPosition === -1) letterColor = "grey"
-      else if (currentGuess[i] === rightGuess[i]) letterColor = "green"
+      else if (guessString[i] === rightGuess[i]) letterColor = "green"
       else letterColor = "yellow"
       rightGuess[letterPosition] = "#"
 
@@ -71,11 +76,11 @@ function Board() {
     }
     if (guessString === rightGuessString) {
       alert("You guessed right!")
-      setGuessesRemaining(0)
+      const action = { type: "GAME_OVER" }
+      dispatch(action)
     } else {
-      setGuessesRemaining(guessesRemaining - 1)
-      setCurrentGuess([])
-      setNextLetter(0)
+      const action = { type: "SUBMIT_WORD" }
+      dispatch(action)
       if (guessesRemaining === 0) {
         alert(
           `You've run out of guesses! The correct word was: ${rightGuessString}`
@@ -84,35 +89,18 @@ function Board() {
     }
   }
 
-  useEffect(() => {
-    function handleKeyboardInput(e) {
-      if (guessesRemaining === 0) return
-      const pressedKey = String(e.key)
-      const found = pressedKey.match(/[a-z]/gi)
-      if (pressedKey === "Backspace" && nextLetter !== 0) {
-        deleteLetter()
-      } else if (pressedKey === "Enter") {
-        checkGuess()
-      } else if (found && found.length === 1) {
-        insertLetter(pressedKey)
-      }
-    }
-
-    document.addEventListener("keyup", handleKeyboardInput)
-    return () => document.removeEventListener("keyup", handleKeyboardInput)
-  }, [nextLetter])
-
-  // function shadeKeyBoard(letter, color) {
-  //   // TODO
-  // }
-
   return (
     <div className="game-board">
-      {Array(NUMBER_OF_GUESSES)
+      {Array(numberOfGuesses)
         .fill(0)
         .map((el, idx) => `row-${idx}`)
         .map((id, idx) => (
-          <Row key={id} row={idx} cols={rightGuessString.length} />
+          <Row
+            key={id}
+            row={idx}
+            cols={rightGuessString.length}
+            activeRow={numberOfGuesses - guessesRemaining === idx}
+          />
         ))}
     </div>
   )
