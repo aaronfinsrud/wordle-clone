@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useReducer, createContext } from "react"
 import PropTypes from "prop-types"
 import { initialState, boardReducer } from "./BoardReducer"
-import getIdioms from "../assets/words"
+import getIdioms, { getZodiacAnimal } from "../assets/words"
 
 export const BoardContext = createContext(null)
 
@@ -11,6 +11,7 @@ function BoardProvider({ children }) {
 
   useEffect(() => {
     setLoading(false)
+    console.log(state.rightGuessString)
   }, [])
 
   function submitWord() {
@@ -61,7 +62,9 @@ function BoardProvider({ children }) {
   }
 
   return (
-    <BoardContext.Provider value={{ state, dispatch, submitWord }}>
+    <BoardContext.Provider
+      value={{ state, dispatch, submitWord, getZodiacAnimal }}
+    >
       {!loading && children}
     </BoardContext.Provider>
   )

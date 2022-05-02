@@ -4,16 +4,19 @@ import { BoardContext } from "../contexts/BoardContext"
 
 /**
  * TODO:
- * MaterialUI for alerts
- * allow input of 4 characters via one input
+ * Material UI for alerts
  * Chinese/English language toggle
+ * Fill last character slot w/ 4 letter inpu
  */
 
 function Board() {
-  const { state } = useContext(BoardContext)
+  const { state, getZodiacAnimal } = useContext(BoardContext)
   const { board } = state
+  const zodiacAnimal = getZodiacAnimal()
   return (
     <div className="game-board">
+      <h1>Wordle Clone</h1>
+      {`Year of the ${zodiacAnimal}`}
       {board.map((rowArray) => (
         <Row column={rowArray} key={`row-${rowArray.id}`} />
       ))}

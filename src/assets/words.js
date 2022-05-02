@@ -1660,6 +1660,25 @@ const pig = [
   "猪朋狗友",
 ]
 
+export function getZodiacAnimal() {
+  const year = new Date().getFullYear()
+  const zodiacAnimals = [
+    "Monkey",
+    "Rooster",
+    "Dog",
+    "Pig",
+    "Rat",
+    "Ox",
+    "Tiger",
+    "Rabbit",
+    "Dragon",
+    "Snake",
+    "Horse",
+    "Goat",
+  ]
+  return zodiacAnimals[year % 12]
+}
+
 export default function getIdioms() {
   const year = new Date().getFullYear()
   switch (year % 12) {
