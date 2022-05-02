@@ -1660,7 +1660,8 @@ const pig = [
   "猪朋狗友",
 ]
 
-export default function getIdioms(year) {
+export default function getIdioms() {
+  const year = new Date().getFullYear()
   switch (year % 12) {
     case 0:
       return monkey
