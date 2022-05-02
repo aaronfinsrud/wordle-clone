@@ -2,23 +2,24 @@ import React from "react"
 import PropTypes from "prop-types"
 import Box from "./Box"
 
-function Row({ row, cols, activeRow }) {
+function Row({ column }) {
   return (
     <div className="letter-row">
-      {Array(cols)
-        .fill(0)
-        .map((el, idx) => `row-${row}-col-${idx}`)
-        .map((id) => (
-          <Box active={activeRow} key={id} id={id} cols={cols} />
-        ))}
+      {column.map((cell) => (
+        <Box key={cell.id} cell={cell} />
+      ))}
     </div>
   )
 }
 
 Row.propTypes = {
-  cols: PropTypes.number.isRequired,
-  row: PropTypes.number.isRequired,
-  activeRow: PropTypes.bool.isRequired,
+  column: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      character: PropTypes.string.isRequired,
+      backgroundColor: PropTypes.string.isRequired,
+    })
+  ).isRequired,
 }
 
 export default Row
