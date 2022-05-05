@@ -1,6 +1,10 @@
 # Wordle Clone
 A wordle clone built with React hooks, this web application is an excellent way to practice Chinese idioms. As a hint, start by guessing an idiom containing the Zodiac animal for the current year...
 
+## Screenshots
+![Peek 2022-05-04 23-21](https://user-images.githubusercontent.com/52397472/166859348-0b2bb282-6b43-4b9d-9e0c-5fa97f8ef861.gif)
+
+
 ## Available Scripts
 
 In the project directory, you can run:
